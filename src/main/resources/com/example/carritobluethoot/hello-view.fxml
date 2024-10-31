@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 
 <?import javafx.scene.control.Button?>
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.carritobluethoot.HelloController">
+<VBox alignment="CENTER" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.carritobluethoot.HelloController">
     <HBox alignment="CENTER">
-        <Button text="up" onAction="#onForwardButtonClick"/>
+        <Button style="-fx-font-size: 30px; -fx-border-radius: 5px" text="Adelante" onAction="#onForwardButtonClick"/>
     </HBox>
-    <HBox>
-        <Button onAction="onLeftButtonClick"/>
-        <Button onAction="onRightButtonClick"/>
+    <HBox alignment="CENTER">
+        <Button style="-fx-font-size: 30px; -fx-border-radius: 5px" text='Izquierda' onAction="#onLeftButtonClick"/>
+        <Button style="-fx-font-size: 30px; -fx-border-radius: 5px" text='Derecha' onAction="#onRightButtonClick"/>
     </HBox>
-    <HBox>
-        <Button text="v" onAction="onBackwardButtonClick"/>
+    <HBox alignment="CENTER">
+        <Button style="-fx-font-size: 30px; -fx-border-radius: 5px" text="Atras" onAction="#onBackwardButtonClick"/>
     </HBox>
 </VBox>

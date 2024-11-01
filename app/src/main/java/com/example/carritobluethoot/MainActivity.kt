@@ -1,12 +1,14 @@
 package com.example.carritobluethoot
 
 import android.R.attr.action
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -21,11 +23,45 @@ class MainActivity : ComponentActivity() {
 //    private var arrayDevices: ArrayList<BluetoothDevice>? = null
 
 
+    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main);
+
         val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
         val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.getAdapter()
+
+        if (bluetoothAdapter?.isEnabled == false) {
+            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            val REQUEST_ENABLE_BT = 1
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+        }
+
+        //consultar el conjunto de para ver si el dispositivo deseado ya es conocido por si direccion MAC
+        val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+        pairedDevices?.forEach { device ->
+            val deviceName = device.name
+            val deviceHardwareAddress = device.address // MAC address
+        }
+
+        // regitro para broadcasts cuando un dispositivo es descubierto
+        val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+        registerReceiver(receiver, filter)
+
+        //CODIGO PARA HACER EL DISPOSITIVO ANDROID DESCUBRIBLE POR 5 MINUTOS
+//        val requestCode = 1;
+//        val discoverableIntent: Intent = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE).apply {
+//            putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300)
+//        }
+//        startActivityForResult(discoverableIntent, requestCode)
+
+        
+
+        //=====BOTONES=====
+        val btnBuscar : Button = findViewById(R.id.btnBuscarDispositivo)
+        btnBuscar.setOnClickListener { view ->
+
+        }
         val btnAdelante : Button = findViewById(R.id.btnAdelante)
         btnAdelante.setOnClickListener{view->
             //codigo cuando el boton es clickeado
@@ -42,7 +78,33 @@ class MainActivity : ComponentActivity() {
         btnDerecha.setOnClickListener{view->
             //codigo cuando el boton es clickeado
         }
+    }
 
+    // Create a BroadcastReceiver for ACTION_FOUND.
+    private val receiver = object : BroadcastReceiver() {
+
+        @SuppressLint("MissingPermission")
+        override fun onReceive(context: Context, intent: Intent) {
+            val action: String? = intent.action
+            when(action) {
+                BluetoothDevice.ACTION_FOUND -> {
+                    // Discovery has found a device. Get the BluetoothDevice
+                    // object and its info from the Intent.
+                    val device: BluetoothDevice? =
+                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+                    if (device != null) {
+                        val deviceName = device.name //nombre del dispositivo
+                        val deviceHardwareAddress = device.address // direccion MAC
+                    }
+                }
+            }
+        }
+    }
+
+    //Al cerrar la aplicacion
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(receiver)
     }
 
 
